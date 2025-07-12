@@ -34,15 +34,25 @@ pg (PostgreSQL client)
 📁 Folder Structure
 
 abc-ignite-api/
+
 ├── controllers/         # Request logic
+
 │   ├── booking.js
+
 │   └── class.js
+
 ├── routes/              # API route definitions
+
 │   ├── index.js
+
 ├── helpers/             # DB connection and utils
+
 │   ├── db.js
+
 │   └── utils.js
+
 ├── index.js             # App entry point
+
 └── package.json
 
 -----------------------------------------------------------------
