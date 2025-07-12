@@ -107,6 +107,22 @@ Body:
   "capacity": 10
 }
 
+Logic:
+
+Joi validation ensures:
+
+--name is required
+
+--startDate and endDate are valid
+
+--endDate is in future
+
+--capacity is ≥ 1
+
+The controller generates a date list using a utility
+
+For each day, it inserts one class row in DB with given time, duration, and capacity
+
 🔹 Book a Class
 
 POST /api/bookings
@@ -119,6 +135,26 @@ Body:
   "participationDate": "2025-08-03"
 }
 
+Logic:
+
+Joi validation checks:
+
+--memberName is present
+
+--className is present
+
+--participationDate is a future date
+
+Looks for the matching class (by name + date)
+
+Checks if class has remaining capacity
+
+If available:
+
+--Booking is inserted
+
+--Class's booked count is incremented
+
 🔹 Search Bookings
 
 GET /api/bookings
@@ -128,6 +164,18 @@ GET /api/bookings
   "startDate": "2025-08-08", //optional
   "endDate": "2025-08-10", //optional
 }
+
+Logic:
+
+Joi validation checks:
+
+--memberName is optional
+
+--start and end dates range is optional
+
+Dynamically builds a query using passed filters
+
+Returns array of: member name, class name, booking date, start time
 
 ----------------------------------------------------------------------------
 
@@ -146,5 +194,15 @@ A class can't be overbooked
 🧪 Testing
 
 Use Postman or curl to test endpoints.
+
+Example CURL -
+
+curl -X POST http://localhost:3000/api/bookings \
+  -H "Content-Type: application/json" \
+  -d '{
+    "memberName": "Alice",
+    "className": "Pilates",
+    "participationDate": "2025-08-04"
+  }'
 
 
