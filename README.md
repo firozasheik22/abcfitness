@@ -45,6 +45,8 @@ abc-ignite-api/
 ├── index.js             # App entry point
 └── package.json
 
+-----------------------------------------------------------------
+
 🛠 Setup Instructions
 
 ✅ Requirements
@@ -57,6 +59,8 @@ Install moment - npm install moment
 Install Joi - npm install joi
 
 PostgreSQL installed locally
+
+---------------------------------------------------------------------
 
 🔧 Database Setup
 
@@ -72,6 +76,8 @@ const pool = new Pool({
   port: 5432,
 });
 
+-------------------------------------------------------------------------------------
+
 📦 Install Dependencies
 
 npm install
@@ -81,6 +87,8 @@ npm install
 node index.js
 
 Server runs at: http://localhost:3000
+
+------------------------------------------------------------------------
 
 📌 API Endpoints
 
@@ -121,6 +129,7 @@ GET /api/bookings
   "endDate": "2025-08-10", //optional
 }
 
+----------------------------------------------------------------------------
 
 ✅ Validation Rules
 
@@ -131,6 +140,8 @@ endDate must be a future date
 participationDate must be in the future
 
 A class can't be overbooked
+
+----------------------------------------------------------------------------
 
 🧪 Testing
 
