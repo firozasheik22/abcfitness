@@ -4,7 +4,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'abcignite',
-  password: '1234', //
+  password: '1234', //your_password
   port: 5432,
 });
 
@@ -13,11 +13,11 @@ const initDB = async () => {
     CREATE TABLE IF NOT EXISTS classes (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
-      date DATE NOT NULL,
+      start_date DATE NOT NULL,
+      end_date DATE NOT NULL,
       start_time TEXT NOT NULL,
       duration INTEGER NOT NULL,
-      capacity INTEGER NOT NULL,
-      booked INTEGER DEFAULT 0
+      capacity INTEGER NOT NULL
     );
   `);
 

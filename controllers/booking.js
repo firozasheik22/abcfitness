@@ -21,31 +21,31 @@ exports.createBooking = async (req, res) => {
   const { memberName, className, participationDate } = req.body;
 
   try {
+    const bookingDate = moment(participationDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
+
     const { rows } = await pool.query(
-      `SELECT * FROM classes WHERE name = $1 AND date = TO_DATE($2, 'MM/DD/YYYY')`,
-      [className, participationDate]
+      `SELECT * FROM classes WHERE name = $1 AND $2 BETWEEN start_date AND end_date`,
+      [className, bookingDate]
     );
 
-    if (rows.length === 0) {
+    if (!rows?.length) {
       return res.status(404).json({ error: 'Class not found for the given date' });
     }
 
     const targetClass = rows[0];
 
-    if (targetClass.booked >= targetClass.capacity) {
-      return res.status(400).json({ error: 'Class is full' });
+    const bookingCountResult = await pool.query(
+      'SELECT COUNT(*) FROM bookings WHERE class_id = $1 AND participation_date = $2',
+      [targetClass.id, bookingDate]
+    );
+    const count = parseInt(bookingCountResult.rows[0].count);
+    if (count >= targetClass.capacity) {
+      return res.status(400).json({ error: 'Class is full on this date' });
     }
-
-    const bookingDate = moment(participationDate, 'MM-DD-YYYY');
 
     await pool.query(
       'INSERT INTO bookings (member_name, class_id, participation_date) VALUES ($1, $2, $3)',
-      [memberName, targetClass.id, bookingDate.format('YYYY-MM-DD')]
-    );
-
-    await pool.query(
-      'UPDATE classes SET booked = booked + 1 WHERE id = $1',
-      [targetClass.id]
+      [memberName, targetClass.id, bookingDate]
     );
 
     return res.status(201).json({ message: 'Booking successful' });
@@ -80,7 +80,6 @@ exports.searchBookings = async (req, res) => {
     }
 
     const { rows } = await pool.query(query, params);
-    console.log('rows', rows);
     if (!rows.length) return res.status(200).json({ message: 'No Bookings exist with given details'} );
     return res.status(200).json(rows);
   } catch (err) {
