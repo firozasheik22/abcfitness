@@ -4,8 +4,9 @@ FIROZA - ABCFitness - Coding Exercise - Team Ignite
 A RESTful API built using Node.js, Express, and PostgreSQL to manage workout classes and member bookings for gyms/clubs.
 
 🚀 Features
+-------------
 
-Create classes with start and end dates, capacity, duration, start time
+Create a class with start and end dates, capacity, duration, start time
 
 Book a class by specifying member name and date
 
@@ -18,6 +19,7 @@ Input validation using Joi
 ------------------------------------------------------------------
 
 🧱 Tech Stack
+---------------
 
 Node.js
 
@@ -32,6 +34,7 @@ pg (PostgreSQL client)
 -------------------------------------------------------------------
 
 📁 Folder Structure
+-----------------------
 
 abc-ignite-api/
 
@@ -58,14 +61,19 @@ abc-ignite-api/
 -----------------------------------------------------------------
 
 🛠 Setup Instructions
+----------------------
 
 ✅ Requirements
+----------------
 
 Node.js (v16 or later)
 
 Install Express - npm install express
+
 Install pg - npm install pg
+
 Install moment - npm install moment
+
 Install Joi - npm install joi
 
 PostgreSQL installed locally
@@ -73,6 +81,7 @@ PostgreSQL installed locally
 ---------------------------------------------------------------------
 
 🔧 Database Setup
+--------------------
 
 Create PostgreSQL DB: CREATE DATABASE abcignite;
 
@@ -88,19 +97,49 @@ const pool = new Pool({
 
 -------------------------------------------------------------------------------------
 
-📦 Install Dependencies
-
-npm install
-
 🚀 Start Server
+-----------------
 
 node index.js
 
 Server runs at: http://localhost:3000
 
-------------------------------------------------------------------------
+🗄️ Database Schema
+--------------------
+
+classes Table
+-------------
+id SERIAL PRIMARY KEY,
+
+name TEXT NOT NULL,
+
+start_date DATE NOT NULL,
+
+end_date DATE NOT NULL,
+
+start_time TEXT NOT NULL,
+
+duration INTEGER NOT NULL,
+
+capacity INTEGER NOT NULL
+
+-----------------------------
+
+bookings Table
+--------------
+
+id SERIAL PRIMARY KEY,
+
+member_name TEXT NOT NULL,
+
+class_id INTEGER REFERENCES classes(id),
+
+participation_date DATE NOT NULL
+
+-------------------------------------------------------------
 
 📌 API Endpoints
+---------------------
 
 🔹 Create Classes
 
@@ -110,8 +149,8 @@ Body:
 
 {
   "name": "Pilates",
-  "startDate": "2025-08-01",
-  "endDate": "2025-08-10",
+  "startDate": "12-09-2025",
+  "endDate": "12-19-2025",
   "startTime": "14:00",
   "duration": 60,
   "capacity": 10
@@ -129,9 +168,7 @@ Joi validation ensures:
 
 --capacity is ≥ 1
 
-The controller generates a date list using a utility
-
-For each day, it inserts one class row in DB with given time, duration, and capacity
+The controller Inserts a single record into the classes table.
 
 🔹 Book a Class
 
@@ -142,7 +179,7 @@ Body:
 {
   "memberName": "John Doe",
   "className": "Pilates",
-  "participationDate": "2025-08-03"
+  "participationDate": "12-14-2025"
 }
 
 Logic:
@@ -155,15 +192,15 @@ Joi validation checks:
 
 --participationDate is a future date
 
-Looks for the matching class (by name + date)
+Finds the class by name and participationDate is within the class's start/end range 
 
-Checks if class has remaining capacity
+Validates:
 
-If available:
+Count of existing bookings for that date does not exceed capacity
 
---Booking is inserted
+If valid:
 
---Class's booked count is incremented
+Inserts new record into bookings
 
 🔹 Search Bookings
 
@@ -171,8 +208,8 @@ GET /api/bookings
 
 {
   "memberName": "John Doe", //optional
-  "startDate": "2025-08-08", //optional
-  "endDate": "2025-08-10", //optional
+  "startDate": "12-14-2025", //optional
+  "endDate": "12-15-2025", //optional
 }
 
 Logic:
@@ -190,6 +227,7 @@ Returns array of: member name, class name, booking date, start time
 ----------------------------------------------------------------------------
 
 ✅ Validation Rules
+---------------------
 
 capacity must be at least 1
 
@@ -202,6 +240,7 @@ A class can't be overbooked
 ----------------------------------------------------------------------------
 
 🧪 Testing
+----------------
 
 Use Postman or curl to test endpoints.
 
@@ -212,7 +251,7 @@ curl -X POST http://localhost:3000/api/bookings \
   -d '{
     "memberName": "Alice",
     "className": "Pilates",
-    "participationDate": "2025-08-04"
+    "participationDate": "12-15-2025"
   }'
 
 
